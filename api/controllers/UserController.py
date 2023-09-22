@@ -34,6 +34,19 @@ GET - Returns all users
  except: 
     return  {"err":"Server Error!"},500
  
+def GetUser(userid):
+   try: 
+      
+    
+      if userid is None:
+         return {"err":"Missing User ID"}, 400
+      
+
+      resp = requests.request("GET" ,url=f"{API_URL}/users/{userid}",headers=headers)
+      return resp.json()
+   except:
+      return ""
+ 
 def CreateNewUser():
     '''
     GET - Returns a new user created 
@@ -53,23 +66,15 @@ def CreateNewUser():
              'admin':data.get("admin"),
              'licensed_sheet_creator':data.get("licensed_sheet_creator")
           })
- 
-          return jsonify(createUser), 201
+          
+         #  API: This operation is only available to system administrators
+         # resp = requests.request("POST" ,url=f"{API_URL}/users",headers=headers, data=createUser)
+
+
+         return jsonify(createUser)
       
     except:
         return""
 
     
-#  PUT - Update User 
-def UpdateUser():
-     '''
-    GET -Update all users 
-    '''
-     return ""
 
-
-def RemoveUser():
-   '''
-    GET -Remove a users 
-    '''
-   return ""
