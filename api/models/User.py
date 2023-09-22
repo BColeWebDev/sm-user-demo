@@ -11,7 +11,7 @@ class User:
             # if data is clean 
          validators = validationCreateUser(data)
         
-         return  validators
+         return  data
         except Exception as e:
             # Exception thrown
             print("e",e)

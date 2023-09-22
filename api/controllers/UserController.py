@@ -1,6 +1,7 @@
 import requests
 import os
 from config.credentials import API_KEY,API_URL
+from config.helpers import createTableHeaders,createFilters
 from models.User import User
 from flask import request,Flask,json,jsonify
 headers = {"Authorization": f"Bearer {API_KEY}"}
@@ -15,24 +16,41 @@ GET - Returns all users
  try:
     page = request.args.get("page")
     pageSize = request.args.get("pageSize")
+    email =request.args.get("email")
     print(pageSize)
     queryStr =""
     # builds queryParams 
 
     # RequireParams
-    if page is None or pageSize is None:
+    if page is None or pageSize is None :
        return {"err": "Page Number or Page Limit Missing"}, 400
     else:
-       queryStr = f'?page={page}&pageSize={pageSize}'
-    
-    # Optionals
+       
+      # Query String 
+     queryStr = f'?page={page}&pageSize={pageSize}{"&email={email}".format(email=createFilters(email)) if email is not None  else ""}'
 
-
-    resp = requests.request("GET" ,url=f"{API_URL}/users{queryStr}",headers=headers)
- 
-    return resp.json()
+    data = requests.request("GET" ,url=f"{API_URL}/users{queryStr}",headers=headers)
+    response =data.json()
+   
+    response['tableHeaders'] = createTableHeaders(response['data'], tableLabels={"firstName":"First Name","lastName":"Last Name","id":"ID","name":"Name","email":"Email"})
+    print("response",response)
+    return response
  except: 
     return  {"err":"Server Error!"},500
+ 
+def GetUser(userid):
+   try: 
+      
+    
+      if userid is None:
+         return {"err":"Missing User ID"}, 400
+      
+
+      data = requests.request("GET" ,url=f"{API_URL}/users/{userid}",headers=headers)
+      response =data.json()
+      return response
+   except:
+      return ""
  
 def CreateNewUser():
     '''
@@ -53,23 +71,15 @@ def CreateNewUser():
              'admin':data.get("admin"),
              'licensed_sheet_creator':data.get("licensed_sheet_creator")
           })
- 
-          return jsonify(createUser), 201
+          
+         #  API: This operation is only available to system administrators
+         # resp = requests.request("POST" ,url=f"{API_URL}/users",headers=headers, data=createUser)
+
+
+         return jsonify(createUser)
       
     except:
         return""
 
     
-#  PUT - Update User 
-def UpdateUser():
-     '''
-    GET -Update all users 
-    '''
-     return ""
 
-
-def RemoveUser():
-   '''
-    GET -Remove a users 
-    '''
-   return ""
