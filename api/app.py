@@ -1,8 +1,7 @@
 from flask import Flask
-import os
-from dotenv import load_dotenv
+
 from routes.index import blueprint
-load_dotenv()
+
 app= Flask(__name__)
 
 app.register_blueprint(blueprint, url_prefix="/api/users")
