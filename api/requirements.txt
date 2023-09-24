@@ -17,3 +17,4 @@ urllib3==2.0.5
 Werkzeug==2.3.7
 yarg==0.1.9
 Flask-Cors==4.0.0
+smartsheet-python-sdk==3.0.2

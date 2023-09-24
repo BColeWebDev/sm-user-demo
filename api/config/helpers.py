@@ -19,6 +19,9 @@ def createTableHeaders(tableData, tableLabels):
     return list
 
 def createFilters(queryStr):
+
+
+
     '''
     Dynamically creates filters and returns formatted querystring 
     '''
@@ -27,3 +30,25 @@ def createFilters(queryStr):
     
 
     return str
+
+
+# Sorts collection data either ascending or desending 
+def sortCollections(sort, data):
+    # TODO: Fix bug
+    key = sort.split(':')[0]
+    value = sort.split(':')[1]
+    
+    
+
+    if (value == "asc"):
+        data = sorted(data, key=lambda d: d[f'{key}'])
+        print(data)
+        return data
+
+    if (value == "desc"):
+        data = sorted(data, key=lambda d: d[f'{key}'], reverse=True)
+    return data
+
+def searchCollection(search, searchBy, data):
+   data = filter(lambda p: p[searchBy] == search, data)
+   return data

@@ -1,4 +1,4 @@
-from config.validations import validationCreateUser
+# from config.validations import validationCreateUser
 #  User Class
 class User:
     
@@ -9,7 +9,7 @@ class User:
             # TODO: Return back sanitize data
             # display errors with the data before sending back to front end
             # if data is clean 
-         validators = validationCreateUser(data)
+        #  validators = validationCreateUser(data)
         
          return  data
         except Exception as e:

@@ -1,15 +1,11 @@
 import requests
 import os
-from config.credentials import API_KEY,API_URL
-from config.helpers import createTableHeaders,createFilters
+from config.credentials import API_KEY,API_URL,headers
+from config.helpers import createTableHeaders,createFilters,sortCollections,searchCollection
 from models.User import User
 from flask import request,Flask,json,jsonify
-headers = {"Authorization": f"Bearer {API_KEY}"}
-
-
 
 def AllUsers():
- 
  '''
 GET - Returns all users 
 '''
@@ -17,9 +13,12 @@ GET - Returns all users
     page = request.args.get("page")
     pageSize = request.args.get("pageSize")
     email =request.args.get("email")
-    print(pageSize)
+    sort = request.args.get("sort")
+    search = request.args.get("search")
+   
+   # builds queryParams
     queryStr =""
-    # builds queryParams 
+
 
     # RequireParams
     if page is None or pageSize is None :
@@ -29,14 +28,21 @@ GET - Returns all users
       # Query String 
      queryStr = f'?page={page}&pageSize={pageSize}{"&email={email}".format(email=createFilters(email)) if email is not None  else ""}'
 
-    data = requests.request("GET" ,url=f"{API_URL}/users{queryStr}",headers=headers)
-    response =data.json()
-   
-    response['tableHeaders'] = createTableHeaders(response['data'], tableLabels={"firstName":"First Name","lastName":"Last Name","id":"ID","name":"Name","email":"Email"})
-    print("response",response)
+     response = requests.request("GET" ,url=f"{API_URL}/users{queryStr}",headers=headers).json()
+
+   #   if search is not None:
+   #      response['data'] = searchCollection(search=search,searchBy="firstName",data=response)
+     print(filter(lambda p: p.firstName == search,response['data']))
+     if sort is not None:
+        response['data'] = sortCollections(sort=sort,data=response['data'])
+        
+
+    
+     response['tableHeaders'] = createTableHeaders(response['data'], tableLabels={"firstName":"First Name","lastName":"Last Name","id":"ID","name":"Name","email":"Email"})
+  
     return response
- except: 
-    return  {"err":"Server Error!"},500
+ except Exception as err: 
+    return  {"err":err},500
  
 def GetUser(userid):
    try: 
@@ -52,34 +58,4 @@ def GetUser(userid):
    except:
       return ""
  
-def CreateNewUser():
-    '''
-    GET - Returns a new user created 
-    '''
-    try:
-         content_type = request.headers.get('Content-Type')
-
-         if content_type != 'application/json':
-             return {"err":"Content-Type not supported!"}, 400
-         
-         else:
-          data = json.loads(request.data)
-          createUser = User.Create(data={
-             'first_name':data.get("first_name"),
-             'last_name':data.get("last_name"),
-             'email':data.get("email"),
-             'admin':data.get("admin"),
-             'licensed_sheet_creator':data.get("licensed_sheet_creator")
-          })
-          
-         #  API: This operation is only available to system administrators
-         # resp = requests.request("POST" ,url=f"{API_URL}/users",headers=headers, data=createUser)
-
-
-         return jsonify(createUser)
-      
-    except:
-        return""
-
-    
 

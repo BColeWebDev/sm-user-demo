@@ -1,7 +1,7 @@
 from flask import Blueprint
 from blinker import *
 blueprint = Blueprint('blueprint', __name__)
-from controllers.UserController import AllUsers,CreateNewUser,GetUser
+from controllers.UserController import AllUsers,GetUser
 
 # User Routes 
 
@@ -13,6 +13,5 @@ blueprint.route('/',methods=['GET'])(AllUsers)
 blueprint.route('/<userid>',methods=['GET'])(GetUser)
 
 
-# POST - Create ser
-blueprint.route('/create',methods=['POST'])(CreateNewUser)
+
 

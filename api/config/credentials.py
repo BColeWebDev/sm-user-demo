@@ -5,5 +5,4 @@ API_URL = os.getenv("API_URL")
 
 headers = {"Authorization": f"Bearer {API_KEY}",
            "Content-Type":"application/json",
-           
-         }
+          }
