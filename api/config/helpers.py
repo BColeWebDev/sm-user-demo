@@ -1,3 +1,4 @@
+
 def createTableHeaders(tableData, tableLabels):
     '''
      dynamically creates table header obj
@@ -42,13 +43,39 @@ def sortCollections(sort, data):
 
     if (value == "asc"):
         data = sorted(data, key=lambda d: d[f'{key}'])
-        print(data)
+   
         return data
 
     if (value == "desc"):
         data = sorted(data, key=lambda d: d[f'{key}'], reverse=True)
     return data
 
+
 def searchCollection(search, searchBy, data):
-   data = filter(lambda p: p[searchBy] == search, data)
-   return data
+    '''
+    Returns Sorted Collection 
+    @params str search: search query string
+    @params str searchBy: accessor  eg:data['email']
+    @params data list[]: data set
+    '''
+    data =list(filter(lambda person: data if search == ""
+                       or person[searchBy].lower().find(search.lower()) == -1
+                       or person.get(searchBy,None) == None
+                       else 
+                         person[searchBy].lower().find(search.lower()) != -1, data))
+    
+    return data
+
+
+
+def paginateCollection(page, pageDisplay, data):
+    '''
+    Returns Paginated Collection
+    @params number page: page number
+    @params number pageDisplay: number of pages 
+    @params list[] data: data set
+    '''
+    startIndex = (int(page) - 1)*int(pageDisplay)
+    endIndex = int(page) * int(pageDisplay)
+    results = list(data[startIndex:endIndex])
+    return results

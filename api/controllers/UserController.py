@@ -1,9 +1,10 @@
 import requests
 import os
-from config.credentials import API_KEY,API_URL,headers
-from config.helpers import createTableHeaders,createFilters,sortCollections,searchCollection
+from config.credentials import API_URL,headers
+from config.helpers import createTableHeaders,createFilters,sortCollections,searchCollection,paginateCollection
 from models.User import User
 from flask import request,Flask,json,jsonify
+from math import ceil
 
 def AllUsers():
  '''
@@ -26,16 +27,39 @@ GET - Returns all users
     else:
        
       # Query String 
-     queryStr = f'?page={page}&pageSize={pageSize}{"&email={email}".format(email=createFilters(email)) if email is not None  else ""}'
+     queryStr = f'?page={page}&pageSize={pageSize}&includeAll=true{"&email={email}".format(email=createFilters(email)) if email is not None  else ""}'
 
      response = requests.request("GET" ,url=f"{API_URL}/users{queryStr}",headers=headers).json()
 
-   #   if search is not None:
-   #      response['data'] = searchCollection(search=search,searchBy="firstName",data=response)
-     print(filter(lambda p: p.firstName == search,response['data']))
+     # Removes any missing names from collection 
+     response['data'] = list(filter(lambda person: person if (person.get("name",None) != None or
+                                    person.get("firstName",None) != None
+                                    or
+                                    person.get("lastName",None) != None)
+                                    and 
+                                    (person.get("name","") != "" or
+                                    person.get("firstName","") != ""
+                                    or
+                                    person.get("lastName","") != "")
+                                    else None ,response['data']))
+      # Search Collection 
+     if search is not None:
+        response['data'] = searchCollection(search=search,searchBy="firstName",data=response['data'])
+
+     response['pageNumber'] = int(page)
+     response['totalPages'] = ceil(len(response['data']) / int(pageSize))
+
+     
+     
+     # Sort Collection 
      if sort is not None:
         response['data'] = sortCollections(sort=sort,data=response['data'])
         
+     response['data'] = paginateCollection(page=page,pageDisplay=pageSize,data=response['data'])
+
+    
+     
+
 
     
      response['tableHeaders'] = createTableHeaders(response['data'], tableLabels={"firstName":"First Name","lastName":"Last Name","id":"ID","name":"Name","email":"Email"})
