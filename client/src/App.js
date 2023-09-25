@@ -1,17 +1,28 @@
+import { useState } from 'react';
 import './App.css';
+import Navbar from './component/Navbar';
 import Table from './component/Table';
-import { ChakraProvider, Button } from "@chakra-ui/react"
+import { ChakraProvider } from "@chakra-ui/react";
+import {
+  BrowserRouter 
+} from "react-router-dom";
+
 function App() {
+  
+  const [search, setsearch] = useState("");
   return (
-    <ChakraProvider>
+    <BrowserRouter>
+      <ChakraProvider>
       <div className="App">
         <header className="App-header">
-          <h1>testing</h1>
+         <Navbar search={search} setsearch={setsearch}/>
         </header>
-        <Table />
+        <Table search={search} setsearch={setsearch} />
 
       </div>
     </ChakraProvider>
+    </BrowserRouter>
+  
 
   );
 }
