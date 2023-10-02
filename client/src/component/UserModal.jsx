@@ -8,7 +8,8 @@ import {
     ModalFooter,
     ModalBody,
     ModalCloseButton,
-    useDisclosure
+    useDisclosure,
+    Text
   } from '@chakra-ui/react'
 import { getUser } from '../services/userSevices';
 const UserModal = ({isOpen, onToggle,ID}) => {
@@ -23,11 +24,13 @@ const UserModal = ({isOpen, onToggle,ID}) => {
     <Modal isOpen={isOpen} onClose={onToggle}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>User Id {ModalData.id}</ModalHeader>
+          <ModalHeader>User Id {ModalData?.id}</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
-          {ModalData.firstName}
-          {ModalData.lastName}
+          <ModalBody display={"flex"} flexDir={"column"}>
+            <Text>{ModalData?.firstName}</Text>
+            <Text> {ModalData?.lastName}</Text>
+            <Text>{ModalData?.email}</Text>
+            <Text> {ModalData?.timeZone}</Text>
           </ModalBody>
 
           <ModalFooter>

@@ -86,25 +86,31 @@ const Tables = ({search,setsearch}) => {
 
         
     <TableContainer>
-  <Table variant="striped">
-    <Thead  bg={"gray.300"}>
-    <Tr >
+  <Table 
+   size="sm"
+  >
+    <Thead  height={"60px !important"} fontFamily={"Open Sans"} >
+    <Tr  paddingBottom={"10px"} borderBottom={"1px solid #E7EAEE"}>
         
         {data?.tableHeaders?.map((val,idx)=>
         
-            <Th flex={0.75} textAlign={"center"} key={idx}>{val.name}</Th>
+            <Th flex={0.75} textAlign={"left"} key={idx}>{val.name}</Th>
        )}
     </Tr>
       
     </Thead>
-    {isLoading ? <Box minH={"100vh"} w={"100%"} display={"flex"} justifyContent={"center"} alignItems={"center"}><Spinner/> </Box>:    <Tbody maxH={"100px"} overflow={"auto"}>
+    {isLoading ? <Box minH={"100vh"} w={"100%"} display={"flex"} justifyContent={"center"} alignItems={"center"}><Spinner/> </Box>:  
+     <Tbody color={"#3D4663"} maxH={"100px"} overflow={"auto"}>
      {data?.data?.map((tableBody,idx)=><Fragment key={idx}>
-        <Tr key={idx}>{data.tableHeaders.map((tableHeader,key)=> 
+        <Tr 
+        _hover={{ boxShadow:"2px 2px 15px 6px rgba(52, 127, 219,0.32)", transition:"300ms ease-in-out"}}
+        bg={"gray.50"}
+        key={idx}>{data.tableHeaders.map((tableHeader,key)=> 
         <Fragment key={key}>
           {tableHeader.name === "ID" ?
           displayModal(tableBody,tableHeader)
           :
-          <Td fontWeight={"medium"} key={key} >{tableBody[`${tableHeader.value}`]}</Td>
+          <Td  paddingY={"7"} paddingX={"4"} fontWeight={"medium"} key={key} >{tableBody[`${tableHeader.value}`]}</Td>
 
           }
         </Fragment>
